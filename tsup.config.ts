@@ -45,6 +45,17 @@ const wasmInlineBase64PluginEsbuild = {
         }
       },
     )
+
+    // Alias: rewrite all imports of 'manifold-3d/manifold.wasm' to use '?inline-base64'
+    build.onResolve(
+      { filter: /^manifold-3d\/manifold\.wasm$/ },
+      (args: any) => {
+        return {
+          path: args.path + "?inline-base64",
+          namespace: args.namespace,
+        }
+      },
+    )
   },
 }
 
