@@ -6,6 +6,7 @@ import wasmInlineBase64Plugin from "./vite-plugin-wasm-inline-base64"
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), wasmInlineBase64Plugin()],
+  assetsInclude: ["**/*.wasm"],
   server: {
     headers: {
       "Cross-Origin-Embedder-Policy": "require-corp",
