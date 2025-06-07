@@ -50,10 +50,15 @@ const wasmInlineBase64PluginEsbuild = {
 
 export default defineConfig({
   entry: ["src/index.tsx"],
-  platform: "neutral",
+  platform: "node",
   format: ["esm"],
   dts: true,
   sourcemap: true,
   clean: true,
   esbuildPlugins: [wasmInlineBase64PluginEsbuild],
+  loader: {
+    ".wasm": "dataurl",
+  },
+  noExternal: ["manifold-3d"],
+  external: ["debug"],
 })
