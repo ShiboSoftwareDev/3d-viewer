@@ -56,6 +56,7 @@ const config: StorybookConfig = {
         },
         logLevel: "info",
       },
+      assetsInclude: ["**/*.wasm"],
       optimizeDeps: {
         exclude: ["manifold-3d"],
       },
