@@ -1,10 +1,11 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import tsconfigPaths from "vite-tsconfig-paths"
+import wasmInlineBase64Plugin from "./vite-plugin-wasm-inline-base64"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react(), tsconfigPaths(), wasmInlineBase64Plugin()],
   server: {
     headers: {
       "Cross-Origin-Embedder-Policy": "require-corp",
@@ -15,5 +16,4 @@ export default defineConfig({
       // doesn't work when configured here
     },
   },
-  assetsInclude: ["**/*.wasm"],
 })

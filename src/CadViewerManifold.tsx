@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react"
 import type { AnyCircuitElement, CadComponent } from "circuit-json"
 import { su } from "@tscircuit/soup-util"
-import * as THREE from "three"
+import manifoldWasmBase64 from "manifold-3d/manifold.wasm?inline-base64"
 import { CadViewerContainer } from "./CadViewerContainer"
 import ManifoldModule from "manifold-3d"
 import { useManifoldBoardBuilder } from "./hooks/useManifoldBoardBuilder"
@@ -30,20 +30,40 @@ const CadViewerManifold: React.FC<CadViewerManifoldProps> = ({
   >(null)
 
   useEffect(() => {
-    const manifoldConfig = {
-      locateFile: (path: string, scriptDirectory: string) =>
-        path === "manifold.wasm" ? "/manifold.wasm" : scriptDirectory + path,
-    }
-    ;(ManifoldModule as any)(manifoldConfig)
-      .then((loadedModule: ManifoldToplevel) => {
+    const initializeManifold = async () => {
+      try {
+        const base64ToUint8Array = (base64: string): Uint8Array => {
+          const binaryString = atob(base64)
+          const len = binaryString.length
+          const bytes = new Uint8Array(len)
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i)
+          }
+          return bytes
+        }
+        const wasmBytes = base64ToUint8Array(manifoldWasmBase64)
+
+        // Config for ManifoldModule factory, using embedded wasmBinary
+        const factoryConfig = {
+          wasmBinary: wasmBytes.buffer,
+        }
+
+        const loadedModule: ManifoldToplevel = await (ManifoldModule as any)(
+          factoryConfig,
+        )
         loadedModule.setup()
         setManifoldJSModule(loadedModule)
-      })
-      .catch(() => {
+      } catch (error: any) {
+        console.error("Failed to load or initialize Manifold module:", error)
         setManifoldLoadingError(
-          "Failed to load Manifold module. Check console for details.",
+          `Failed to load or initialize Manifold module. Check console for details. Error: ${
+            error.message || String(error)
+          }`,
         )
-      })
+      }
+    }
+
+    initializeManifold()
   }, [])
 
   const {
