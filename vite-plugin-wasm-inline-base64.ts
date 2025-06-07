@@ -14,9 +14,13 @@ export default function wasmInlineBase64Plugin() {
             map: null,
           }
         } catch (e: any) {
-          console.error(
-            `[vite-plugin-wasm-inline-base64] Failed to read WASM file ${filePath}: ${e.message}`,
-          )
+          const errorMessage = `[vite-plugin-wasm-inline-base64] Failed to read WASM file ${filePath}: ${e.message}`
+          console.error(errorMessage)
+          return {
+            code: null,
+            map: null,
+            errors: [errorMessage],
+          }
         }
       }
       return null
