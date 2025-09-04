@@ -32,6 +32,12 @@ export function useGlobalObjLoader(url: string | null): Group | null | Error {
 
     async function loadAndParseObj() {
       try {
+        if (cleanUrl.endsWith(".obj")) {
+          const loader = new OBJLoader()
+          const object = await loader.loadAsync(cleanUrl)
+          return object
+        }
+
         const response = await fetch(cleanUrl)
         if (!response.ok) {
           throw new Error(
